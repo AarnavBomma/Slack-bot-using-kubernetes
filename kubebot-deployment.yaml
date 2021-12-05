@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubebot
+  labels:
+    component: kubebot
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: kubebot
+    spec:
+      containers:
+      - name: kubebot
+        image: <image-name>
+        imagePullPolicy: Always
+        env:
+        # Create a secret with your slack bot token and reference it here
+        - name: KUBEBOT_SLACK_TOKEN
+          valueFrom:
+            secretKeyRef: 
+              name: kubebot
+              key: token 
+        # Create a secret with your slack bot channel id and reference it here
+        - name: KUBEBOT_SLACK_CHANNELS_IDS
+          valueFrom:
+            secretKeyRef: 
+              name: kubebot 
+              key: channel
+        # Specify slack admins that kubebot should listen to; use a space as a separator
+        - name: KUBEBOT_SLACK_ADMINS_NICKNAMES
+          value: "user1 user2"
+        # Specify valid kubectl commands that kubebot should support; use a space as a separator
+        - name: KUBEBOT_SLACK_VALID_COMMANDS
+          value: "get describe secrets"
